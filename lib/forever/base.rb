@@ -28,7 +28,7 @@ module Forever
       return if ARGV.any? { |arg| arg == "stop" }
 
       fork do
-        $0 = "Forever: #{$0}"
+        $0 = "Forever: #{File.basename($0)}"
         print "=> Process demonized with pid #{Process.pid} with Forever v.#{Forever::VERSION}\n"
 
         %w(INT TERM KILL).each { |signal| trap(signal)  { stop! } }
