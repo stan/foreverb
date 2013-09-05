@@ -6,7 +6,8 @@ module Forever
     include Every
 
     def initialize(options={}, &block)
-      options.each { |k,v| send(k, v) }
+      @options = options
+      options.each { |k,v| send(k, v) if respond_to?(k) }
 
       instance_eval(&block)
 
@@ -38,7 +39,7 @@ module Forever
 
         File.open(pid, "w") { |f| f.write(Process.pid.to_s) } if pid
 
-        stream      = log ? File.new(log, "a") : File.open('/dev/null', 'w')
+        stream      = log ? File.new(log, @options[:append_log] ? 'a' : 'w') : File.open('/dev/null', 'w')
         stream.sync = true
 
         STDOUT.reopen(stream)
